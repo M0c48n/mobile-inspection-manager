@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - mim_db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=mobile_inspection_manager
+      - MYSQL_USER=mimuser
+      - MYSQL_PASSWORD=mimpass
+    ports:
+      - 33306:3306
+
+  web:
+    build: .
+    env_file:
+      - docker-compose.env
+    restart: always
+    volumes:
+      - ./django/:/code
+    ports:
+      - "8000:8000"
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  # nginx:
+  #   image: nginx:1.21.0
+  #   volumes:
+  #     - ./nginx/conf:/etc/nginx/conf.d/
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - web
+
+volumes:
+  mim_db_data:
