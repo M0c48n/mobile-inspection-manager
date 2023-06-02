@@ -16,6 +16,7 @@ services:
 
   web:
     build: .
+    platform: linux/amd64
     env_file:
       - docker-compose.env
     restart: always
